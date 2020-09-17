@@ -9,24 +9,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class EstoqueDAO {
-    Conexao cn = new Conexao();
-    Connection con;
-    PreparedStatement pre;
-    ResultSet rs;
-    
     public int create(int idProduto, int quantidade) {
-        try {
-            String sql = "INSERT INTO estoque (idProduto, quantidade) VALUES (?, ?)";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+        try (Connection conn = new ConectaDB_Postgres().getConexao()) {
+            String sql = "INSERT INTO estoque (idProduto, quantidade) values (?, ?)";
+            PreparedStatement pre = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pre.setInt(1, idProduto);
             pre.setInt(2, quantidade);
             pre.execute();
-            
-            rs = pre.getGeneratedKeys();
-            
+            ResultSet rs = pre.getGeneratedKeys();
             rs.next();
             if (rs.getInt(1) > 0) {
                 return rs.getInt(1);
@@ -39,12 +29,10 @@ public class EstoqueDAO {
     }
 
     public boolean create(Estoque estoque) {
-        try {
-            String sql = "INSERT INTO estoque (idProduto, quantidade) VALUES (?, ?)";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+        //conexao com o banco.
+        try (Connection conn = new ConectaDB_Postgres().getConexao()) {
+            String sql = "insert into estoque (idProduto, quantidade) values (?, ?)";
+            PreparedStatement pre = conn.prepareStatement(sql);
             pre.setInt(1, estoque.getIdProduto());
             pre.setInt(2, estoque.getQuantidade());
 
@@ -58,15 +46,12 @@ public class EstoqueDAO {
     }
 
     public Estoque read(int idProduto) {
-        try {
-            String sql = "SELECT * FROM estoque WHERE estoque.idProduto = ?";
-                        
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+        try (Connection conn = new ConectaDB_Postgres().getConexao()) {
+            String sql = "select * from estoque where estoque.idProduto = ?";
+            PreparedStatement pre = conn.prepareStatement(sql);
             pre.setInt(1, idProduto);
 
-            rs = pre.executeQuery();
+            ResultSet rs = pre.executeQuery();
 
             while (rs.next()) {
                 Estoque e = new Estoque();
@@ -81,15 +66,13 @@ public class EstoqueDAO {
     }
 
     public boolean updateEntrada(Estoque estoque) {
-        try {
+        try (Connection conn = new ConectaDB_Postgres().getConexao()) {
             String sql = "UPDATE estoque SET quantidade = quantidade + ? WHERE idProduto = ?";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+            PreparedStatement pre = conn.prepareStatement(sql);
             pre.setInt(1, estoque.getQuantidade());
             pre.setInt(2, estoque.getIdProduto());
             
+
             if (pre.executeUpdate() > 0) {
                 return true;
             }
@@ -100,15 +83,13 @@ public class EstoqueDAO {
     }
     
     public boolean updateSaida(Estoque estoque) {
-        try {
+        try (Connection conn = new ConectaDB_Postgres().getConexao()) {
             String sql = "UPDATE estoque SET quantidade = quantidade - ? WHERE idProduto = ?";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+            PreparedStatement pre = conn.prepareStatement(sql);
             pre.setInt(1, estoque.getQuantidade());
             pre.setInt(2, estoque.getIdProduto());
             
+
             if (pre.executeUpdate() > 0) {
                 return true;
             }
@@ -119,14 +100,10 @@ public class EstoqueDAO {
     }
 
     public boolean delete(int id) {
-        try {
+        try (Connection conn = new ConectaDB_Postgres().getConexao()) {
             String sql = "DELETE FROM produto WHERE id_produto = ?";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+            PreparedStatement pre = conn.prepareStatement(sql);
             pre.setInt(1, id);
-            
             if (pre.executeUpdate() > 0) {
                 return true;
             }
@@ -138,15 +115,10 @@ public class EstoqueDAO {
 
     public ArrayList<Estoque> getEstoque() {
         ArrayList<Estoque> estoque = new ArrayList<>();
-        
-        try {
-            String sql = "SELECT * FROM estoque";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
-            rs = pre.executeQuery();
-            
+        //Connection conn = new ConectaDB_Postgres().getConexao();
+        try (Connection conn = new ConectaDB_Postgres().getConexao();) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM estoque");
             while (rs.next()) {
                 Estoque est = new Estoque();
                 est.setIdProduto(rs.getInt("idProduto"));

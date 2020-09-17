@@ -9,27 +9,18 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class ProdutosDAO {
-    Conexao cn = new Conexao();
-    Connection con;
-    PreparedStatement pre;
-    ResultSet rs;
-    
+
     public int create(int idFuncionario, String descricao, String marca, float preco) {
-        try {
-            String sql = "INSERT INTO produto (idFuncionario, descricao, marca, preco) VALUES (?, ?, ?, ?)";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+        try (Connection conn = new ConectaDB_Postgres().getConexao()) {
+            String sql = "INSERT INTO produto (idFuncionario, descricao, marca, preco) values (?, ?, ?, ?)";
+            PreparedStatement pre = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pre.setInt(1, idFuncionario);
             pre.setString(2, descricao);
             pre.setString(3, marca);
             pre.setFloat(4, preco);
             pre.execute();
-            
-            rs = pre.getGeneratedKeys();
+            ResultSet rs = pre.getGeneratedKeys();
             rs.next();
-            
             if (rs.getInt(1) > 0) {
                 return rs.getInt(1);
             }
@@ -41,12 +32,10 @@ public class ProdutosDAO {
     }
 
     public boolean create(Produto produto) {
-        try {
-            String sql = "INSERT INTO produto (idFuncionario, descricao, marca, preco) VALUES (?, ?, ?, ?)";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+        //conexao com o banco.
+        try (Connection conn = new ConectaDB_Postgres().getConexao()) {
+            String sql = "insert into produto (idFuncionario, descricao, marca, preco) values (?, ?, ?, ?)";
+            PreparedStatement pre = conn.prepareStatement(sql);
             pre.setInt(1, produto.getIdFuncionario());
             pre.setString(2, produto.getDescricao());
             pre.setString(3, produto.getMarca());
@@ -62,15 +51,12 @@ public class ProdutosDAO {
     }
 
     public Produto read(int id) {
-        try {
-            String sql = "SELECT * FROM produto WHERE produto.id_produto = ?";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+        try (Connection conn = new ConectaDB_Postgres().getConexao()) {
+            String sql = "select * from produto where produto.id_produto = ?";
+            PreparedStatement pre = conn.prepareStatement(sql);
             pre.setInt(1, id);
 
-            rs = pre.executeQuery();
+            ResultSet rs = pre.executeQuery();
 
             while (rs.next()) {
                 Produto p = new Produto();
@@ -87,12 +73,9 @@ public class ProdutosDAO {
     }
 
     public boolean update(Produto produto) {
-        try {
+        try (Connection conn = new ConectaDB_Postgres().getConexao()) {
             String sql = "UPDATE produto SET descricao = ?, marca = ?, preco = ?, unidade = ? WHERE produto.id_produto = ?";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+            PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, produto.getDescricao());
             pre.setString(2, produto.getMarca());
             pre.setFloat(3, produto.getPreco());
@@ -107,11 +90,9 @@ public class ProdutosDAO {
     }
 
     public boolean delete(int id) {
-        try {
+        try (Connection conn = new ConectaDB_Postgres().getConexao()) {
             String sql = "DELETE FROM produto WHERE id_produto = ?";
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+            PreparedStatement pre = conn.prepareStatement(sql);
             pre.setInt(1, id);
             if (pre.executeUpdate() > 0) {
                 return true;
@@ -124,13 +105,10 @@ public class ProdutosDAO {
 
     public ArrayList<Produto> getProdutos() {
         ArrayList<Produto> produtos = new ArrayList<>();
-       
-        try {
-            String sql = "SELECT * FROM produto";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+        //Connection conn = new ConectaDB_Postgres().getConexao();
+        try (Connection conn = new ConectaDB_Postgres().getConexao();) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM produto");
             while (rs.next()) {
                 Produto pro = new Produto();
                 pro.setId(rs.getInt("id"));

@@ -10,27 +10,18 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class SaidaDAO {
-    Conexao cn = new Conexao();
-    Connection con;
-    PreparedStatement pre;
-    ResultSet rs;
-    
+
     public int create(int idProduto, int idFuncionario, String data_saida, int quantidade) {
-        try {
-            String sql = "INSERT INTO saida (idProduto, idFuncionario, data_saida, quantidade) VALUES (?, ?, ?, ?)";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+        try (Connection conn = new ConectaDB_Postgres().getConexao()) {
+            String sql = "INSERT INTO saida (idProduto, idFuncionario, data_saida, quantidade) values (?, ?, ?, ?)";
+            PreparedStatement pre = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pre.setInt(1, idProduto);
             pre.setInt(2, idFuncionario);
             pre.setString(3, data_saida);
             pre.setInt(4, quantidade);
             pre.execute();
-            
-            rs = pre.getGeneratedKeys();
+            ResultSet rs = pre.getGeneratedKeys();
             rs.next();
-            
             if (rs.getInt(1) > 0) {
                 return rs.getInt(1);
             }
@@ -42,12 +33,10 @@ public class SaidaDAO {
     }
 
     public boolean create(Saida saida) {
-        try {
-            String sql = "INSERT INTO saida (idProduto, idFuncionario, data_saida, quantidade) VALUES (?, ?, ?, ?)";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+        //conexao com o banco.
+        try (Connection conn = new ConectaDB_Postgres().getConexao()) {
+            String sql = "insert into saida (idProduto, idFuncionario, data_saida, quantidade) values (?, ?, ?, ?)";
+            PreparedStatement pre = conn.prepareStatement(sql);
             pre.setInt(1, saida.getIdProduto());
             pre.setInt(2, saida.getIdFuncionario());
             pre.setString(3, saida.getData_saida());
@@ -63,15 +52,12 @@ public class SaidaDAO {
     }
 
     public Produto read(int id) {
-        try {
-            String sql = "SELECT * FROM entrada WHERE entrada.id_produto = ?";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+        try (Connection conn = new ConectaDB_Postgres().getConexao()) {
+            String sql = "select * from entrada where entrada.id_produto = ?";
+            PreparedStatement pre = conn.prepareStatement(sql);
             pre.setInt(1, id);
 
-            rs = pre.executeQuery();
+            ResultSet rs = pre.executeQuery();
 
             while (rs.next()) {
                 Produto p = new Produto();
@@ -89,13 +75,10 @@ public class SaidaDAO {
 
     public ArrayList<Saida> getSaida() {
         ArrayList<Saida> saida = new ArrayList<>();
-        
-        try {
-            String sql = "SELECT * FROM saida";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+        //Connection conn = new ConectaDB_Postgres().getConexao();
+        try (Connection conn = new ConectaDB_Postgres().getConexao();) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM saida");
             while (rs.next()) {
                 Saida sd = new Saida();
                 sd.setIdProduto(rs.getInt("idProduto"));

@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = "entradaProdutos")
+@WebServlet(urlPatterns = "/entradaProdutos")
 public class EntradaProdutos extends HttpServlet {
 
     @Override

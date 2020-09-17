@@ -7,21 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class FuncionarioDAO {
-    Conexao cn = new Conexao();
-    Connection con;
-    PreparedStatement pre;
-    ResultSet rs;
-    
+
     public Funcionario read(int id) {
-        try {
-            String sql = "SELECT * FROM funcionario WHERE funcionario.id_funcionario = ?";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+        try (Connection conn = new ConectaDB_Postgres().getConexao()) {
+            String sql = "select * from funcionario where funcionario.id_funcionario = ?";
+            PreparedStatement pre = conn.prepareStatement(sql);
             pre.setInt(1, id);
 
-            rs = pre.executeQuery();
+            ResultSet rs = pre.executeQuery();
 
             while (rs.next()) {
                 Funcionario f = new Funcionario();
@@ -37,17 +30,13 @@ public class FuncionarioDAO {
     }
 
     public Funcionario read(String email, String senha) {
-        try {
-            String sql = "SELECT * FROM funcionario WHERE email = ? AND senha=?";
-            
-            con = cn.getConnection();
-            pre = con.prepareStatement(sql);
-            
+        try (Connection conn = new ConectaDB_Postgres().getConexao()) {
+            String sql = "SELECT * FROM funcionario"
+                    + " WHERE email = ? AND senha=?";
+            PreparedStatement pre = conn.prepareStatement(sql);
             pre.setString(1, email);
             pre.setString(2, senha);
-            
-            rs = pre.executeQuery();
-            
+            ResultSet rs = pre.executeQuery();
             while (rs.next()) {
                 Funcionario f = new Funcionario();
                 f.setId(rs.getInt("id"));

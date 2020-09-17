@@ -6,16 +6,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LoginDAO {
+    Conexao cn = new Conexao();
+    Connection con;
+    PreparedStatement pre;
+    ResultSet rs;
+    
     public boolean autenticar(String login, String senha){
         
-       try(Connection conn = new ConectaDB_Postgres().getConexao() ){
+       try {
            
-           String sql = " SELECT * FROM funcionario "
-                   + " WHERE senha = ? AND email = ?";
-           PreparedStatement pStmt = conn.prepareStatement(sql);
-           pStmt.setString(1, senha);
-           pStmt.setString(2, login);
-           ResultSet rs = pStmt.executeQuery();
+           String sql = " SELECT * FROM funcionario WHERE senha = ? AND email = ?";
+           
+           con = cn.getConnection();
+           pre = con.prepareStatement(sql);
+           
+           pre.setString(1, senha);
+           pre.setString(2, login);
+           rs = pre.executeQuery();
+           
            while(rs.next()){
                return true;
            }

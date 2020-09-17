@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
     @WebServlet(urlPatterns = "cadastrar_produtos")
-public class CadastrarProdutosServlet extends HttpServlet{
+public class CadastrarProdutos extends HttpServlet{
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

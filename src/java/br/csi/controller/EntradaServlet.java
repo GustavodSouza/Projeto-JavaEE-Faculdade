@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = "entrada_servlet")
+@WebServlet(urlPatterns = "/entrada_servlet")
 public class EntradaServlet extends HttpServlet {
 
     @Override

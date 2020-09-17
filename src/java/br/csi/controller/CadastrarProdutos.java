@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-    @WebServlet(urlPatterns = "cadastrar_produtos")
+    @WebServlet(urlPatterns = "/cadastrar_produtos")
 public class CadastrarProdutos extends HttpServlet{
 
     @Override
