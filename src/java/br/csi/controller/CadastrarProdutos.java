@@ -12,38 +12,30 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-    @WebServlet(urlPatterns = "/cadastrar_produtos")
+@WebServlet(urlPatterns = "/cadastrar_produtos")
 public class CadastrarProdutos extends HttpServlet{
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("Chamou GET....");
-    }
-
-    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-       System.out.println("Método post requisitado.....");
+
        PrintWriter resposta = resp.getWriter();
        
        //Aqui pega o codigo do funcionario logado para que seja cadastrado junto ao produto.
-       Funcionario f =(Funcionario) req.getSession().getAttribute("usuarioLogado");
+       Funcionario f = (Funcionario) req.getSession().getAttribute("usuarioLogado");
        int idFuncionario = f.getId();
-      
        String descricao = req.getParameter("descricao");
        String marca = req.getParameter("marca");
        Float preco = Float.parseFloat(req.getParameter("preco"));   
-       Produto produtos = new Produto(idFuncionario,descricao, marca, preco);
+       
+       Produto produtos = new Produto(idFuncionario, descricao, marca, preco);
        
        boolean retorno = new ProdutosDAO().create(produtos);
        
-       if(retorno)
-       {
+       if(retorno) {
            req.setAttribute("nome_produto", descricao);
-           RequestDispatcher disp = req.getRequestDispatcher("/WEB-INF/views/sucesso.jsp");
+           RequestDispatcher disp = req.getRequestDispatcher("views/sucesso.jsp");
            disp.forward(req, resp);
-       }
-       else
-       {
+       } else {
            resposta.println("<html><body><strong>ERRO</strong></body></html>");
        }
     }

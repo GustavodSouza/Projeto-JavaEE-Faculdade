@@ -17,33 +17,27 @@ public class Login extends HttpServlet{
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
        
+        //Recupera os dados do input
         String login = req.getParameter("login");
         String senha = req.getParameter("senha");
         
-        System.err.println(login +" - " + senha);
-        
-        boolean autenticado = 
-                new LoginDAO().autenticar(login, senha);
+        //Autentica o usuário
+        boolean autenticado = new LoginDAO().autenticar(login, senha);
         
         RequestDispatcher disp;
         
         if(autenticado){
            
             HttpSession sessao = req.getSession();
- sessao.setAttribute("usuarioLogado", 
-         new FuncionarioDAO().read(login, senha));
- 
- 
-            disp = req.getRequestDispatcher("WEB-INF/views/menu.jsp");
+            sessao.setAttribute("usuarioLogado", 
+            new FuncionarioDAO().read(login, senha));
+            disp = req.getRequestDispatcher("views/menu.jsp");
             disp.forward(req, resp); 
+            
         }else{ 
             req.setAttribute("mensagem", "Usuário ou Senha INCORRETOS");
             disp = req.getRequestDispatcher("login.jsp");
             disp.forward(req, resp);            
-        }
-        
+        }   
     }
-
-    
-    
 }

@@ -2,14 +2,15 @@ package br.csi.controller;
 
 import br.csi.dao.EntradaDAO;
 import br.csi.dao.EstoqueDAO;
+import br.csi.dao.ProdutosDAO;
 import br.csi.model.Entrada;
 import br.csi.model.Estoque;
 import br.csi.model.Produto;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -22,12 +23,7 @@ public class EntradaProdutos extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("Método post requisitado.....");
         PrintWriter resposta = resp.getWriter();
-
-        //Aqui pega o codigo do funcionario logado para que seja cadastrado junto ao produto.
-        //Funcionario f =(Funcionario) req.getSession().getAttribute("usuarioLogado");
-        //int id_funcionario = f.getId_funcionario();  
         
         int idProduto = Integer.parseInt(req.getParameter("cod"));
         
@@ -40,26 +36,20 @@ public class EntradaProdutos extends HttpServlet {
         int quantidade = Integer.parseInt(req.getParameter("quantidade"));
         
         //Insere o produto na entrada.
-        Entrada entrada = new Entrada(idProduto, data_entrada, quantidade);
+        Entrada entrada = new Entrada(idProduto, 1, data_entrada, quantidade);
        
         //Busca o produto a partir do Id recebido do jsp
         Estoque ret = new EstoqueDAO().read(idProduto);
         
         //Se o retorno for diferente de NULL o produto ja existe.
         //Dar update apenas
-        if(ret != null)
-        {
+        if(ret != null) {
             Estoque est = new Estoque();
             est.setIdProduto(idProduto);
             est.setQuantidade(quantidade);
-            new EstoqueDAO().update(est);
-            System.out.println("Entrou aqui");
+            new EstoqueDAO().updateEntrada(est);
             resposta.println("<html><body><strong>Ja existe</strong></body></html>");
-        }
-        //Se nao cria o produto.
-        else
-        {
-            //Insere o produto no estoque
+        } else {
              Estoque estoque = new Estoque(idProduto, quantidade);
              new EstoqueDAO().create(estoque);
         }
@@ -67,12 +57,19 @@ public class EntradaProdutos extends HttpServlet {
         boolean retorno = new EntradaDAO().create(entrada);
 
         if (retorno) {
-            RequestDispatcher disp = req.getRequestDispatcher("WEB-INF/views/sucessoEntrada.jsp");
+            RequestDispatcher disp = req.getRequestDispatcher("views/sucessoEntrada.jsp");
             disp.forward(req, resp);
         } else {
             resposta.println("<html><body><strong>ERRO</strong></body></html>");
         }
 
         
+    }
+    
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ArrayList<Produto> p = new ProdutosDAO().getProdutos();
+        req.setAttribute("produtos", p);
+        req.getRequestDispatcher("views/entrada.jsp").forward(req, resp);
     }
 }

@@ -98,6 +98,8 @@ public class EntradaDAO {
             con = cn.getConnection();
             pre = con.prepareStatement(sql);
             
+            rs = pre.executeQuery();
+            
             while (rs.next()) {
                 Entrada ent = new Entrada();
                 ent.setIdProduto(rs.getInt("idProduto"));

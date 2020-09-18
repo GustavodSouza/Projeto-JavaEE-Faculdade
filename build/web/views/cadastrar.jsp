@@ -8,7 +8,7 @@
     <body>
         <h1> Usuario Logado: ${sessionScope['usuarioLogado'].nome}</h1>
         <div><h1>Cadastrar Produto</h1></div>
-        <form action="cadastrar_produtos" method="POST">
+        <form action="../cadastrar_produtos" method="POST">
             <p>Descrição: <input name="descricao" type="text" placeholder="Descrição do produto"></p>
             <p>Marca: <input name="marca" type="text" placeholder="Marca do produto"></p>
             <p>Preco: <input name="preco" type="text" placeholder="Preço por unidade"></p>

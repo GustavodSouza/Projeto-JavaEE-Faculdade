@@ -17,8 +17,6 @@
         <h1> Entrada de Produtos </h1>
         <h2> Usuario Logado: ${sessionScope['usuarioLogado'].nome} </h2>
         <form action="entradaProdutos" method="POST">
-            
-            <%-- Pega o id do produto selecionado--%>
             <select name="cod">        
                 <c:forEach items="${produtos}" var="item" >
                     <option value="${item.getId()}">

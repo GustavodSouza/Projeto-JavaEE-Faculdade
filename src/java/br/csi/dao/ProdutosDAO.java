@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 public class ProdutosDAO {
@@ -15,6 +14,7 @@ public class ProdutosDAO {
     ResultSet rs;
     
     public int create(int idFuncionario, String descricao, String marca, float preco) {
+        System.out.println("Chamou");
         try {
             String sql = "INSERT INTO produto (idFuncionario, descricao, marca, preco) VALUES (?, ?, ?, ?)";
             
@@ -130,6 +130,8 @@ public class ProdutosDAO {
             
             con = cn.getConnection();
             pre = con.prepareStatement(sql);
+            
+            rs = pre.executeQuery();
             
             while (rs.next()) {
                 Produto pro = new Produto();

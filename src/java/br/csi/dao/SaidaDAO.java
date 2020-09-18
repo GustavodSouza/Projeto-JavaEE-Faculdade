@@ -96,6 +96,8 @@ public class SaidaDAO {
             con = cn.getConnection();
             pre = con.prepareStatement(sql);
             
+            rs = pre.executeQuery();
+            
             while (rs.next()) {
                 Saida sd = new Saida();
                 sd.setIdProduto(rs.getInt("idProduto"));

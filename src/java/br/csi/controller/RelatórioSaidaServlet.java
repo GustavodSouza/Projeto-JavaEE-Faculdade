@@ -18,8 +18,6 @@ public class RelatórioSaidaServlet extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        System.out.println("Chamou doGet do Servlet...");
-
         PrintWriter resposta = resp.getWriter();
 
         resposta.println("<html>");
