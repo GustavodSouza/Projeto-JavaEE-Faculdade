@@ -1,0 +1,79 @@
+.principal {
+    background-image: url("../img/fundo.jpg");
+    background-size: cover;
+    height: 100vh;
+}
+
+.botoes {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-login {
+    margin-right: 20px;
+}
+
+.titulo {
+    font-size: 50px;
+    display: flex;
+    justify-content: center;
+    font-family: sans-serif;
+    font-weight: bold;
+    color: white;
+}
+
+.formulario {
+    height: 500px;
+    background-color: #6969ea;
+    width: 40%;
+    margin: 0 auto;
+    border-radius: 20px;
+    padding-top: 20px;
+    margin-top: 50px;
+}
+
+.titulo-formulario {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    color: #fff;
+}
+
+.titulo-form {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 100px;
+}
+
+.inputs {
+    width: 60%;
+    margin: 0 auto;
+}
+
+.div-botao {
+    margin-top: 30px;
+    width: 100%;
+}
+
+.btn-primary {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #0000b5;
+    outline: none !important;
+}
+
+label {
+    color: #fff;
+}
+
+a {
+    color: #fff;
+}
+
+a:hover {
+    transition: opacity 0.5s;
+    color: #dadaea;
+}
